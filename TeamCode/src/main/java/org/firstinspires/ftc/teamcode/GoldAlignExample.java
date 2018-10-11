@@ -79,6 +79,12 @@ public class GoldAlignExample extends OpMode
     @Override
     public void start() {
 
+        while(!detector.getAligned()){
+            telemetry.addLine("NOOOOO");
+            telemetry.update();
+        }
+        telemetry.addLine("YASSSS");
+        telemetry.update();
     }
 
 

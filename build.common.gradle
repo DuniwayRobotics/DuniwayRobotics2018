@@ -101,5 +101,11 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
+    maven { url 'https://jitpack.io' }
 }
+
+dependencies {
+    //implementation 'com.github.floe:opencv-android:3.4.1'
+}
+
 apply from: 'build.release.gradle'

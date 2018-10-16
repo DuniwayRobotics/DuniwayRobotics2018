@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(group = "Aftershock", name = "Aftershock Autonomous 2018")
 public class AftershockAutonomous2018 extends LinearOpMode{
 
-    TestBotHardware robot = new TestBotHardware();
+    TestbotHardware robot = new TestbotHardware();
 
     //Set up elapsed time object
     private ElapsedTime elapsed = new ElapsedTime();

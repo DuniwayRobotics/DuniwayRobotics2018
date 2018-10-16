@@ -37,20 +37,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="GoldAlign Example", group="DogeCV")
-
-public class GoldAlignExample extends OpMode
-{
+@TeleOp(name="Gold Test", group="Aftershock")
+public class GoldAlignExample extends OpMode {
     private GoldAlignDetector detector;
 
+    TestbotHardware robot = new TestbotHardware();
 
     @Override
     public void init() {
-        telemetry.addData("Status", "DogeCV 2018.0 - Gold Align Example");
-
         detector = new GoldAlignDetector();
         detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
+
+        robot.init(hardwareMap);
 
         // Optional Tuning
         detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
@@ -65,8 +64,6 @@ public class GoldAlignExample extends OpMode
         detector.ratioScorer.perfectRatio = 1.0;
 
         detector.enable();
-
-
     }
 
     @Override
@@ -78,13 +75,6 @@ public class GoldAlignExample extends OpMode
      */
     @Override
     public void start() {
-
-        while(!detector.getAligned()){
-            telemetry.addLine("NOOOOO");
-            telemetry.update();
-        }
-        telemetry.addLine("YASSSS");
-        telemetry.update();
     }
 
 
@@ -92,6 +82,15 @@ public class GoldAlignExample extends OpMode
     public void loop() {
         telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
         telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
+
+
+        if(!detector.getAligned()){
+            telemetry.addLine("NOOOOO");
+            telemetry.update();
+        }else{
+            telemetry.addLine("YASSSS");
+            telemetry.update();
+        }
     }
 
     /*

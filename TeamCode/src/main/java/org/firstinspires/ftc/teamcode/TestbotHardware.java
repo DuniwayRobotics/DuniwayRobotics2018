@@ -52,27 +52,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class TestBotHardware
+public class TestbotHardware
 {
     /* Public OpMode members. */
     public DcMotor DC_1   = null;
     public DcMotor DC_2  = null;
-    public Servo Servo_1  = null;
-    public Servo Servo_2  = null;
-
-    public final static double Servo1_HOME = 0.2;
-    public final static double Servo2_HOME = 0.2;
-    public final static double ARM_MIN_RANGE  = 0.20;
-    public final static double ARM_MAX_RANGE  = 0.90;
-    public final static double CLAW_MIN_RANGE  = 0.20;
-    public final static double CLAW_MAX_RANGE  = 0.7;
 
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public TestBotHardware() {
+    public TestbotHardware() {
     }
 
     /* Initialize standard Hardware interfaces */
@@ -95,11 +86,5 @@ public class TestBotHardware
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         DC_1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         DC_2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Define and initialize ALL installed servos.
-        Servo_1  = hwMap.get(Servo.class, "Servo 1");
-        Servo_2 = hwMap.get(Servo.class, "Servo 2");
-        Servo_1.setPosition(Servo1_HOME);
-        Servo_2.setPosition(Servo2_HOME);
     }
 }

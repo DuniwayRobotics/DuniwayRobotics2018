@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TestBotTeleop_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    TestBotHardware robot           = new TestBotHardware();   // Use a Pushbot's hardware
+    TestbotHardware robot           = new TestbotHardware();   // Use a Pushbot's hardware
                                                                // could also use HardwarePushbotMatrix class.
     @Override
     public void runOpMode() {

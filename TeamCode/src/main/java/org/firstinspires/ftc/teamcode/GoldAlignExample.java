@@ -32,77 +32,98 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
+import com.disnodeteam.dogecv.Dogeforia;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 @TeleOp(name="Gold Test", group="Aftershock")
 public class GoldAlignExample extends OpMode {
+    //Gold align detector
     private GoldAlignDetector detector;
 
-    TestbotHardware robot = new TestbotHardware();
+    //Robot hardware
+    private TestbotHardware robot = new TestbotHardware();
 
+    //Vuforia licence key
+    private static final String VUFORIA_KEY = "ASWyOB//////AAABmdxdKuZHOkZ5vXuVLqSIIyAZDgxp3j23nl691h1BeG2tr6UU/0SoPF49utwQCSlQaKKMS4lnMx0CgmchS5O+Fnco6QZ+2ar0iQj5e3whsIlb1ieTIdmOuE1jtZTug7PVE4adewiYB2XYx6+vBnd+wWxagoIVyWfWDd/mnukv4yrHeIfh5XF9lqqXOiF+SCBBQKRZPuhMMD3Y9ImlH4iCwuh8G/SSdt1orHQpnnmrYBCVQt3GUCMcOGBCbzMYwAsxermd7sMP7asmi9Gd1vJARbUditOsY7S7JoorIMeWVfVKWg7lAp5Og1wCNNXtdBwK1fKLh+gdTxaVWarBz6BV68D3T3PvGmqH3kZp6JQm6MK4";
+
+    //Parameters for the Dogeforia object
+    private Dogeforia.Parameters parameters = new Dogeforia.Parameters();
+
+    //A variable for the Dogeforia object
+    private Dogeforia vuforia;
     @Override
     public void init() {
-        detector = new GoldAlignDetector();
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        detector.useDefaults();
-
+        //Init the hardware map
         robot.init(hardwareMap);
 
-        // Optional Tuning
-        detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
-        detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-        detector.downscale = 0.4; // How much to downscale the input frames
+        //Create a GoldAlignDetector that can also be used for Vuforia
+        detector = new GoldAlignDetector();
+        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0, true);
+        detector.useDefaults();
 
-        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
+        //Set some parameters for detector
+        detector.alignSize = 100;
+        detector.alignPosOffset = 0;
+        detector.downscale = 0.4;
+
+        //Set the detector to use the max area
+        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA;
         detector.maxAreaScorer.weight = 0.005;
 
+        //Ratio scoring settings
         detector.ratioScorer.weight = 5;
         detector.ratioScorer.perfectRatio = 1.0;
 
+        //Enable detector
         detector.enable();
+
+        //Define a Dogeforia object
+        vuforia = new Dogeforia(parameters);
+
+        //Stup and start the Dogeforia object
+        vuforia.setDogeCVDetector(detector);
+        vuforia.enableDogeCV();
+        vuforia.showDebug();
+        vuforia.start();
     }
 
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
     @Override
     public void start() {
+        //Start rotating to find gold
         robot.DC_1.setPower(0.12);
         robot.DC_2.setPower(-0.39);
     }
 
-
     @Override
     public void loop() {
+        //Some diagnostic data
         telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
         telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
 
 
         if(!detector.getAligned()){
+            //Not aligned, keep going
             telemetry.addLine("NOOOOO");
             telemetry.update();
         }else{
+            //Aligned!
             telemetry.addLine("YASSSS");
             telemetry.update();
+
+            //Drive forward
             robot.DC_1.setPower(0.3);
             robot.DC_2.setPower(0.3);
         }
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
     @Override
     public void stop() {
+        //Disable and stop detectors
         detector.disable();
+        vuforia.stop();
     }
 
 }

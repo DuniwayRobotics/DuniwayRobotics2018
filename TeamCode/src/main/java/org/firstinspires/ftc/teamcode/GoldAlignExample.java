@@ -75,6 +75,8 @@ public class GoldAlignExample extends OpMode {
      */
     @Override
     public void start() {
+        robot.DC_1.setPower(0.12);
+        robot.DC_2.setPower(-0.39);
     }
 
 
@@ -90,6 +92,8 @@ public class GoldAlignExample extends OpMode {
         }else{
             telemetry.addLine("YASSSS");
             telemetry.update();
+            robot.DC_1.setPower(0.3);
+            robot.DC_2.setPower(0.3);
         }
     }
 

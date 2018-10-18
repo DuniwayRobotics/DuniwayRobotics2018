@@ -74,9 +74,9 @@ public class TestbotHardware
         // Define and Initialize Misc.
 
         // Define and Initialize Motors
-        DC_1  = hwMap.get(DcMotor.class, "DC 1");
-        DC_2 = hwMap.get(DcMotor.class, "DC 2");
-        DC_2.setDirection(DcMotor.Direction.REVERSE);
+        DC_1  = hwMap.get(DcMotor.class, "dc_1");
+        DC_2 = hwMap.get(DcMotor.class, "dc_2");
+        DC_1.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         DC_1.setPower(0);

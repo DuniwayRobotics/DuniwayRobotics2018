@@ -104,6 +104,14 @@ public class TeleOp extends LinearOpMode {
             robot.dc_1.setPower(left);
             robot.dc_2.setPower(right);
 
+            if (gamepad1.dpad_up && robot.limit.getState() == false) {
+                robot.dc_2.setPower(1);
+            }
+
+            if (gamepad1.right_bumper) {
+                robot.dc_1.setPower(1);
+            }
+
             if (gamepad1.y) {
                 abort = false;
                 if (!abort) {
@@ -136,6 +144,7 @@ public class TeleOp extends LinearOpMode {
             sleep(50);
         }
     }
+
     public void waitWithAbort(double seconds) {
         runtime.reset();
         while (!abort && opModeIsActive() && (runtime.seconds() < seconds)) {

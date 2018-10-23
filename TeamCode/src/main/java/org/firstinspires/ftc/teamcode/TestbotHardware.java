@@ -64,6 +64,7 @@ public class TestbotHardware
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
     public MRIColorBeacon beacon = new MRIColorBeacon();
     public TouchSensor touch = null;
+    public DigitalChannel limit = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -87,6 +88,7 @@ public class TestbotHardware
         rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range_sensor");
         beacon.init(hwMap, "cb");
         touch = hwMap.get(TouchSensor.class, "touch");
+        limit = hwMap.digitalChannel.get("limit");
 
         // Set all motors to zero power
         dc_1.setPower(0);

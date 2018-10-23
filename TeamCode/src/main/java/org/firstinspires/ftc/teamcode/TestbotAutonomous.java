@@ -28,7 +28,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Range", group = "MRI")
-public class MRI_Range extends OpMode {
+public class TestbotAutonomous extends OpMode {
 
     TestbotHardware robot   = new TestbotHardware();   // Use a Pushbot's hardware
 

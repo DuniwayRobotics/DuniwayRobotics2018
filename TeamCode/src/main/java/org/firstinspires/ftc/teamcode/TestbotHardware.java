@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class TestBotHardware
+public class TestbotHardware
 {
     /* Public OpMode members. */
     public DcMotor DC_1   = null;
@@ -72,7 +72,7 @@ public class TestBotHardware
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public TestBotHardware() {
+    public TestbotHardware() {
     }
 
     /* Initialize standard Hardware interfaces */

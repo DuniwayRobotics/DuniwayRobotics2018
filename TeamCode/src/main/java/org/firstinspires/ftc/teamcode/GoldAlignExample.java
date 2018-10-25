@@ -63,7 +63,7 @@ public class GoldAlignExample extends OpMode {
 
         //Create a GoldAlignDetector that can also be used for Vuforia
         detector = new GoldAlignDetector();
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0, true);
+        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0, false);
         detector.useDefaults();
 
         //Set some parameters for detector

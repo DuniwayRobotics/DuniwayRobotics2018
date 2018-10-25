@@ -184,15 +184,18 @@ public class ConceptVuforiaNavRoverRuckus extends LinearOpMode {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
                         CAMERA_CHOICE == FRONT ? 90 : -90, 0, 0));
 
+        /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables)
         {
             ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         }
 
+        /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update();
         waitForStart();
 
+        /** Start tracking the data sets we care about. */
         targetsRoverRuckus.activate();
         while (opModeIsActive()) {
 

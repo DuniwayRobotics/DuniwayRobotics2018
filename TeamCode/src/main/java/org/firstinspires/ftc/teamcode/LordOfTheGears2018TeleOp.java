@@ -29,12 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -50,12 +46,12 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Pushbot")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TestbotTeleOp", group="Testbot")
 //@Disabled
-public class TeleOp extends LinearOpMode {
+public class LordOfTheGears2018TeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
-    TestbotHardware robot           = new TestbotHardware();   // Use a Pushbot's hardware
+    LordOfTheGears2018Hardware robot           = new LordOfTheGears2018Hardware();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     boolean abort = false;
@@ -101,39 +97,8 @@ public class TeleOp extends LinearOpMode {
             }
 
             // Output the safe vales to the motor drives.
-            robot.dc_1.setPower(left);
-            robot.dc_2.setPower(right);
-
-            if (gamepad1.dpad_up && robot.limit.getState() == false) {
-                robot.dc_2.setPower(1);
-            }
-
-            if (gamepad1.right_bumper) {
-                robot.dc_1.setPower(1);
-            }
-
-            if (gamepad1.y) {
-                abort = false;
-                if (!abort) {
-                    robot.beacon.green();
-                }
-                waitWithAbort(1);
-                if (!abort) {
-                    robot.beacon.red();
-                }
-                waitWithAbort(1);
-                if (!abort) {
-                    robot.beacon.blue();
-                }
-                waitWithAbort(1);
-                if (!abort) {
-                    robot.dc_2.setPower(1);
-                    robot.beacon.yellow();
-                }
-                waitWithAbort(1);
-                robot.beacon.purple();
-                robot.dc_2.setPower(0);
-            }
+            robot.leftDrive.setPower(left);
+            robot.rightDrive.setPower(right);
 
             // Send telemetry message to signify robot running;
             telemetry.addData("left", "%.2f", left);

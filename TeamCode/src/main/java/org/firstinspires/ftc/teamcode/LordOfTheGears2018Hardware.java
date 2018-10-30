@@ -29,12 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -47,15 +45,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * In this case that robot is a Pushbot.
  * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
  */
-public class TestbotHardware
+public class LordOfTheGears2018Hardware
 {
     /* Public OpMode members. */
-    public DcMotor  dc_1   = null;
-    public DcMotor  dc_2  = null;
-    public ModernRoboticsI2cRangeSensor rangeSensor = null;
-    public Servo continuousRotation = null;
-    public MRIColorBeacon beacon = new MRIColorBeacon();
-    public TouchSensor touch = null;
+    public DcMotor rightDrive = null; // Looking from the back
+    public DcMotor leftDrive = null;
+    public DcMotor armPivot = null;
+    public DcMotor armGrabber = null;
+    public Servo markerArm = null;
     public DigitalChannel limit = null;
 
     /* local OpMode members. */
@@ -63,7 +60,7 @@ public class TestbotHardware
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public TestbotHardware(){
+    public LordOfTheGears2018Hardware(){
 
     }
 
@@ -73,25 +70,31 @@ public class TestbotHardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        dc_1  = hwMap.get(DcMotor.class, "dc_1");
-        dc_2 = hwMap.get(DcMotor.class, "dc_2");
+        rightDrive  = hwMap.get(DcMotor.class, "rightDrive");
+        leftDrive = hwMap.get(DcMotor.class, "leftDrive");
+        armPivot = hwMap.get(DcMotor.class, "armPivot");
+        armGrabber = hwMap.get(DcMotor.class, "armGrabber");
+        rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Define all sensors
-        rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range_sensor");
-        beacon.init(hwMap, "cb");
-        touch = hwMap.get(TouchSensor.class, "touch");
         limit = hwMap.digitalChannel.get("limit");
 
-        continuousRotation = hwMap.get(Servo.class, "CRServo");
+        // Define all servos
+        markerArm = hwMap.get(Servo.class, "markerArm");
 
-        // Set all motors to zero power
-        dc_1.setPower(0);
-        dc_2.setPower(0);
+        // Set all motors and servos to zero power
+        rightDrive.setPower(0);
+        leftDrive.setPower(0);
+        armPivot.setPower(0);
+        armGrabber.setPower(0);
+
+        markerArm.setPosition(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        dc_1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        dc_2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
  }
 

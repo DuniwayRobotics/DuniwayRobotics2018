@@ -31,7 +31,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -47,13 +50,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TestBot: Teleop POV", group="TestBot")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TestbotTeleOp", group="Testbot")
 //@Disabled
-public class TestBotTeleop_Linear extends LinearOpMode {
+public class TestbotTeleOp extends LinearOpMode {
 
     /* Declare OpMode members. */
-    TestBotHardware robot           = new TestBotHardware();   // Use a Pushbot's hardware
-                                                               // could also use HardwarePushbotMatrix class.
+    TestbotHardware robot           = new TestbotHardware();   // Use a Pushbot's hardware
+    private ElapsedTime runtime = new ElapsedTime();
+
+    boolean abort = false;
+
     @Override
     public void runOpMode() {
         double left;
@@ -81,45 +87,78 @@ public class TestBotTeleop_Linear extends LinearOpMode {
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
             drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.right_stick_x;
+            turn = gamepad1.right_stick_x;
 
             // Combine drive and turn for blended motion.
-            left  = drive + turn;
+            left = drive + turn;
             right = drive - turn;
 
             // Normalize the values so neither exceed +/- 1.0
             max = Math.max(Math.abs(left), Math.abs(right));
-            if (max > 1.0)
-            {
+            if (max > 1.0) {
                 left /= max;
                 right /= max;
             }
 
             // Output the safe vales to the motor drives.
-            robot.DC_1.setPower(left);
-            robot.DC_2.setPower(right);
+            robot.dc_1.setPower(left);
+            robot.dc_2.setPower(right);
 
-            robot.DC_1.setPower(gamepad1.right_trigger);
-            robot.DC_2.setPower(gamepad1.left_trigger);
-
-            if (gamepad1.y) {
-                robot.DC_1.setPower(1);
-            } else if (gamepad1.x) {
-                robot.DC_1.setPower(1);
-            } else if (gamepad1.b) {
-                robot.DC_1.setPower(1);
-            } else if (gamepad1.a) {
-                robot.DC_1.setPower(1);
-            } else {
-                robot.DC_1.setPower(0);
+            if (gamepad1.dpad_up && robot.limit.getState() == false) {
+                robot.dc_2.setPower(1);
             }
 
-            telemetry.addData("left",  "%.2f", left);
+            if (gamepad1.right_bumper) {
+                robot.dc_1.setPower(1);
+            }
+
+            if (gamepad1.y) {
+                abort = false;
+                if (!abort) {
+                    robot.beacon.green();
+                }
+                waitWithAbort(1);
+                if (!abort) {
+                    robot.beacon.red();
+                }
+                waitWithAbort(1);
+                if (!abort) {
+                    robot.beacon.blue();
+                }
+                waitWithAbort(1);
+                if (!abort) {
+                    robot.dc_2.setPower(1);
+                    robot.beacon.yellow();
+                }
+                waitWithAbort(1);
+                robot.beacon.purple();
+                robot.dc_2.setPower(0);
+            }
+
+            if (gamepad1.dpad_left) {
+                robot.continuousRotation.setPosition(0);
+            } else if (gamepad1.dpad_right) {
+                robot.continuousRotation.setPosition(1);
+            } else {
+                robot.continuousRotation.setPosition(0.5);
+            }
+
+            // Send telemetry message to signify robot running;
+            telemetry.addData("left", "%.2f", left);
             telemetry.addData("right", "%.2f", right);
             telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
+        }
+    }
+
+    public void waitWithAbort(double seconds) {
+        runtime.reset();
+        while (!abort && opModeIsActive() && (runtime.seconds() < seconds)) {
+            if (gamepad1.back) {
+                abort = true;
+            }
         }
     }
 }

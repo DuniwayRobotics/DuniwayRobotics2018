@@ -15,6 +15,7 @@ Support is available by emailing support@modernroboticsinc.com.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -27,7 +28,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Range", group = "MRI")
+@Autonomous(name = "TestbotAutonomous", group = "Testbot")
 public class TestbotAutonomous extends OpMode {
 
     TestbotHardware robot   = new TestbotHardware();   // Use a Pushbot's hardware

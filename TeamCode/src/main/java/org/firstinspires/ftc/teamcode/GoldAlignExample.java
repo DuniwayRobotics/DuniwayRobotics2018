@@ -37,6 +37,8 @@ import com.disnodeteam.dogecv.Dogeforia;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
 
 @TeleOp(name="Gold Test", group="Aftershock")
 public class GoldAlignExample extends OpMode {
@@ -46,11 +48,8 @@ public class GoldAlignExample extends OpMode {
     //Robot hardware
     private TestbotHardware robot = new TestbotHardware();
 
-    //Vuforia licence key
-    private static final String VUFORIA_KEY = "ASWyOB//////AAABmdxdKuZHOkZ5vXuVLqSIIyAZDgxp3j23nl691h1BeG2tr6UU/0SoPF49utwQCSlQaKKMS4lnMx0CgmchS5O+Fnco6QZ+2ar0iQj5e3whsIlb1ieTIdmOuE1jtZTug7PVE4adewiYB2XYx6+vBnd+wWxagoIVyWfWDd/mnukv4yrHeIfh5XF9lqqXOiF+SCBBQKRZPuhMMD3Y9ImlH4iCwuh8G/SSdt1orHQpnnmrYBCVQt3GUCMcOGBCbzMYwAsxermd7sMP7asmi9Gd1vJARbUditOsY7S7JoorIMeWVfVKWg7lAp5Og1wCNNXtdBwK1fKLh+gdTxaVWarBz6BV68D3T3PvGmqH3kZp6JQm6MK4";
-
     //Parameters for the Dogeforia object
-    private Dogeforia.Parameters parameters = new Dogeforia.Parameters();
+    private VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
     //A variable for the Dogeforia object
     private Dogeforia vuforia;
@@ -77,11 +76,12 @@ public class GoldAlignExample extends OpMode {
         detector.ratioScorer.weight = 5;
         detector.ratioScorer.perfectRatio = 1.0;
 
-        //Enable detector
-        detector.enable();
+        //Vuforia licence key
+        parameters.vuforiaLicenseKey = "AeD6c6X/////AAABmZ3ExKW40UAfroKSDQ2JrLxH4Mlxt6oFF+x0qihPTikBy3IoT+Qj/R4aFwnmv5ERnhX5w58J8AWMCC1pceL0E5GTfwJP/8cjdY831tmQlwioOssywwG7E8MbZys8uzNdBkTOJvnG8vEenOM+8zKR5cqDhG4AOi3v6ydSz8OHGlJf9IcMwQrh9vKP/qAYAWQmZXMIN5KUhipe9VS1zmDEq3h/nqmR/fZcHDwesqJOA2vsfqro/QAfTQa1abnJoT5D1VnLxrmMVlmYP+0KNhxDfIIRGNQGPLTfjYGyFoQpxpNi5Li3XqKajdhruIkluDZ1PXfiRy6SODW2SsJk5aznfDvAqJnXkK2jT2miYSOhhsb1";
 
         //Define a Dogeforia object
         vuforia = new Dogeforia(parameters);
+        vuforia.enableConvertFrameToBitmap();
 
         //Stup and start the Dogeforia object
         vuforia.setDogeCVDetector(detector);

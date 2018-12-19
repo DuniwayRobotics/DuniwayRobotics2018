@@ -6,30 +6,43 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class AftershockHardware2018 {
-    HardwareMap hwMap;
+    private HardwareMap hwMap;
 
     //--------MOTORS--------
     //Arm lifter
-    DcMotor arm_lift = null;
+    DcMotor armLift = null;
+    //Drive
+    DcMotor leftDrive = null;
+    DcMotor rightDrive = null;
 
     //--------SERVOS--------
     //Grabbers
     Servo armLeft = null;
     Servo armRight = null;
+    //Marker flipper
+    Servo marker = null;
 
     //--------SENSORS--------
     //Arm raising limit switch
     DigitalChannel limitSwitch = null;
 
     void init(HardwareMap ahwMap){
+        hwMap = ahwMap;
+
         //--------MOTORS--------
-        arm_lift = hwMap.get(DcMotor.class, "arm_lift");
+        armLift = hwMap.get(DcMotor.class, "arm_lift");
+        leftDrive = hwMap.get(DcMotor.class, "left_drive");
+        rightDrive = hwMap.get(DcMotor.class, "right_drive");
 
         //--------SERVOS--------
         armLeft = hwMap.get(Servo.class, "arm_left");
+        armLeft.setPosition(0);
         armRight = hwMap.get(Servo.class, "arm_right");
+        armRight.setPosition(0);
+        marker = hwMap.get(Servo.class, "marker_placer");
+        marker.setPosition(0);
 
         //--------SENSORS--------
-        limitSwitch = hwMap.get(DigitalChannel.class, "limit_switch");
+        //limitSwitch = hwMap.get(DigitalChannel.class, "limit_switch");
     }
 }

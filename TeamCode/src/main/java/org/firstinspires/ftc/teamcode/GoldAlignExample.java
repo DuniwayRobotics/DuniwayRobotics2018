@@ -62,7 +62,7 @@ public class GoldAlignExample extends OpMode {
     private GoldAlignDetector detector;
 
     //Robot hardware
-    private TestbotHardware robot = new TestbotHardware();
+    private AftershockHardware2018 robot = new AftershockHardware2018();
 
     //Parameters for the Dogeforia object
     private VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
@@ -109,7 +109,7 @@ public class GoldAlignExample extends OpMode {
         detector.ratioScorer.perfectRatio = 1.0;
 
         //--------Dogeforia--------
-
+        /*
         //Vuforia VuMarks
         VuforiaTrackables targetsRoverRuckus = this.vuforia.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
@@ -168,13 +168,14 @@ public class GoldAlignExample extends OpMode {
         vuforia.enableDogeCV();
         vuforia.showDebug();
         vuforia.start();
+        */
     }
 
     @Override
     public void start() {
         //Start rotating to find gold
-        robot.DC_1.setPower(0.12);
-        robot.DC_2.setPower(-0.39);
+        robot.rightDrive.setPower(0.12);
+        robot.leftDrive.setPower(-0.39);
     }
 
     @Override
@@ -194,8 +195,8 @@ public class GoldAlignExample extends OpMode {
             telemetry.update();
 
             //Drive forward
-            robot.DC_1.setPower(0.3);
-            robot.DC_2.setPower(0.3);
+            robot.rightDrive.setPower(0.3);
+            robot.leftDrive.setPower(0.3);
         }
     }
 
@@ -203,7 +204,7 @@ public class GoldAlignExample extends OpMode {
     public void stop() {
         //Disable and stop detectors
         detector.disable();
-        vuforia.stop();
+        //vuforia.stop();
     }
 
     public void getRobotPosition(){

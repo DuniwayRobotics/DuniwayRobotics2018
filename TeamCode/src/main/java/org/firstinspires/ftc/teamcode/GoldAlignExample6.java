@@ -56,7 +56,7 @@ public class GoldAlignExample6 extends OpMode
         // Optional Tuning
         detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
         detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-        detector.constrainPosOffset = 416;
+        detector.constrainPosOffset = 333;
         detector.downscale = 0.4; // How much to downscale the input frames
 
         detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
@@ -90,6 +90,10 @@ public class GoldAlignExample6 extends OpMode
         telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
         telemetry.addData("Y Pos", detector.getYPosition());
         telemetry.update();
+
+        if(!(detector.getAligned() && !detector.getConstrained())){
+
+        }
     }
 
     /*

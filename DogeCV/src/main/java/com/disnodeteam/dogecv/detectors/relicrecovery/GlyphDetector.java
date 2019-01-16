@@ -2,7 +2,6 @@ package com.disnodeteam.dogecv.detectors.relicrecovery;
 
 import com.disnodeteam.dogecv.OpenCVPipeline;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -12,7 +11,6 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

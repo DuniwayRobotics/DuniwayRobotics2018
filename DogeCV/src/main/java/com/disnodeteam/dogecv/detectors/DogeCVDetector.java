@@ -5,7 +5,6 @@ import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.scoring.DogeCVScorer;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;

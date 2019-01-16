@@ -5,7 +5,6 @@ import com.disnodeteam.dogecv.math.MathFTC;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
-import org.opencv.core.MatOfPoint;
 
 /**
  * Created by LeviG on 10/7/2018.

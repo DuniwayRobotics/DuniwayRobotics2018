@@ -27,10 +27,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -63,18 +62,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Pushbot: Auto Drive By Encoder", group="Pushbot")
-@Disabled
 public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+    AftershockHardware2018 robot = new AftershockHardware2018();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     COUNTS_PER_INCH         = 68.376;
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
@@ -108,12 +102,10 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  2000,  2000, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
 
-        robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
-        robot.rightClaw.setPosition(0.0);
+        //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
+        //robot.rightClaw.setPosition(0.0);
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
@@ -121,7 +113,7 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
     }
 
     /*
-     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position
@@ -138,8 +130,8 @@ public class PushbotAutoDriveByEncoder_Linear extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(leftInches);
+            newRightTarget = robot.rightDrive.getCurrentPosition() + (int)(rightInches);
             robot.leftDrive.setTargetPosition(newLeftTarget);
             robot.rightDrive.setTargetPosition(newRightTarget);
 

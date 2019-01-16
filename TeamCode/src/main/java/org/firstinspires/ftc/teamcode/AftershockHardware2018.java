@@ -32,6 +32,7 @@ public class AftershockHardware2018 {
         //--------MOTORS--------
         armLift = hwMap.get(DcMotor.class, "arm_lift");
         leftDrive = hwMap.get(DcMotor.class, "left_drive");
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
 
         //--------SERVOS--------

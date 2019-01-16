@@ -2,27 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.Dogeforia;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
-import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 
 @Autonomous(group = "Aftershock", name = "Aftershock Autonomous 2018")
 public class AftershockAutonomous2018 extends OpMode {
@@ -31,41 +15,37 @@ public class AftershockAutonomous2018 extends OpMode {
 
     //Robot hardware
     private AftershockHardware2018 robot = new AftershockHardware2018();
+    private ElapsedTime runtime = new ElapsedTime();
 
-    //Parameters for the Dogeforia object
-    private VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+    private static final double COUNTS_PER_INCH = 68.376;
 
-    private VuforiaLocalizer.CameraDirection CAMERA_CHOICE = VuforiaLocalizer.CameraDirection.BACK;
-
-    //A variable for the Dogeforia object
-    private Dogeforia vuforia;
-
-    //Measurements for field
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;
-    private static final float mmTargetHeight   = (6) * mmPerInch;
-    private final int CAMERA_FORWARD_DISPLACEMENT  = 110;
-    private final int CAMERA_VERTICAL_DISPLACEMENT = 200;
-    private final int CAMERA_LEFT_DISPLACEMENT     = 0;
-
-    //Vuforia trackable objects
-    private List<VuforiaTrackable> allTrackables = new ArrayList<>();
+    private boolean active = false;
 
     @Override
     public void init() {
         //Init the hardware map
         robot.init(hardwareMap);
 
+        //Init encoders
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        active = true;
+
         //--------DogeCV--------
 
         //Create a GoldAlignDetector that can also be used for Vuforia
         detector = new GoldAlignDetector();
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance(), 0, true);
+        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
 
         //Set some parameters for detector
         detector.alignSize = 100;
         detector.alignPosOffset = 0;
+        detector.constrainPosOffset = 333;
         detector.downscale = 0.4;
 
         //Set the detector to use the max area
@@ -76,74 +56,14 @@ public class AftershockAutonomous2018 extends OpMode {
         detector.ratioScorer.weight = 5;
         detector.ratioScorer.perfectRatio = 1.0;
 
-        //--------Dogeforia--------
-        /*
-        //Vuforia VuMarks
-        VuforiaTrackables targetsRoverRuckus = this.vuforia.loadTrackablesFromAsset("RoverRuckus");
-        VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
-        blueRover.setName("Blue_Rover");
-        VuforiaTrackable redFootprint = targetsRoverRuckus.get(1);
-        redFootprint.setName("Red_Footprint");
-        VuforiaTrackable frontCraters = targetsRoverRuckus.get(2);
-        frontCraters.setName("Front_Craters");
-        VuforiaTrackable backSpace = targetsRoverRuckus.get(3);
-        backSpace.setName("Back_Space");
-
-        //Trackable positions
-        allTrackables.addAll(targetsRoverRuckus);
-
-        OpenGLMatrix blueRoverLocationOnField = OpenGLMatrix
-                .translation(0, mmFTCFieldWidth, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0));
-        blueRover.setLocation(blueRoverLocationOnField);
-
-        OpenGLMatrix redFootprintLocationOnField = OpenGLMatrix
-                .translation(0, -mmFTCFieldWidth, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180));
-        redFootprint.setLocation(redFootprintLocationOnField);
-
-        OpenGLMatrix frontCratersLocationOnField = OpenGLMatrix
-                .translation(-mmFTCFieldWidth, 0, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90));
-        frontCraters.setLocation(frontCratersLocationOnField);
-
-        OpenGLMatrix backSpaceLocationOnField = OpenGLMatrix
-                .translation(mmFTCFieldWidth, 0, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90));
-        backSpace.setLocation(backSpaceLocationOnField);
-
-        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-                .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
-                .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
-                        CAMERA_CHOICE == FRONT ? 90 : -90, 0, 0));
-
-        for (VuforiaTrackable trackable : allTrackables)
-        {
-            ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
-        }
-
-        targetsRoverRuckus.activate();
-
-        //Vuforia licence key
-        parameters.vuforiaLicenseKey = "AeD6c6X/////AAABmZ3ExKW40UAfroKSDQ2JrLxH4Mlxt6oFF+x0qihPTikBy3IoT+Qj/R4aFwnmv5ERnhX5w58J8AWMCC1pceL0E5GTfwJP/8cjdY831tmQlwioOssywwG7E8MbZys8uzNdBkTOJvnG8vEenOM+8zKR5cqDhG4AOi3v6ydSz8OHGlJf9IcMwQrh9vKP/qAYAWQmZXMIN5KUhipe9VS1zmDEq3h/nqmR/fZcHDwesqJOA2vsfqro/QAfTQa1abnJoT5D1VnLxrmMVlmYP+0KNhxDfIIRGNQGPLTfjYGyFoQpxpNi5Li3XqKajdhruIkluDZ1PXfiRy6SODW2SsJk5aznfDvAqJnXkK2jT2miYSOhhsb1";
-
-        //Define a Dogeforia object
-        vuforia = new Dogeforia(parameters);
-        vuforia.enableConvertFrameToBitmap();
-
-        //Stup and start the Dogeforia object
-        vuforia.setDogeCVDetector(detector);
-        vuforia.enableDogeCV();
-        vuforia.showDebug();
-        vuforia.start();
-        */
+        detector.enable();
     }
 
     @Override
     public void start() {
         //Start rotating to find gold
         robot.rightDrive.setPower(0.12);
-        robot.leftDrive.setPower(-0.39);
+        robot.leftDrive.setPower(-0.12);
     }
 
     @Override
@@ -153,7 +73,7 @@ public class AftershockAutonomous2018 extends OpMode {
         telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
 
 
-        if(!detector.getAligned()){
+        if(!(detector.getAligned() && !detector.getConstrained())){
             //Not aligned, keep going
             telemetry.addLine("NOOOOO");
             telemetry.update();
@@ -163,8 +83,12 @@ public class AftershockAutonomous2018 extends OpMode {
             telemetry.update();
 
             //Drive forward
-            robot.rightDrive.setPower(0.3);
-            robot.leftDrive.setPower(0.3);
+            //robot.rightDrive.setPower(0.3);
+            //robot.leftDrive.setPower(0.3);
+            encoderDrive(0.3, 24, 24, 4);
+            encoderDrive(0.2, 12, -12, 3);
+            encoderDrive
+
         }
     }
 
@@ -175,38 +99,55 @@ public class AftershockAutonomous2018 extends OpMode {
         //vuforia.stop();
     }
 
-    public void getRobotPosition() {
-        boolean targetVisible = false;
-        OpenGLMatrix lastLocation = null;
+    private void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
 
-        for (VuforiaTrackable trackable : allTrackables) {
-            if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                telemetry.addData("Visible Target", trackable.getName());
-                targetVisible = true;
+        // Ensure that the opmode is still active
+        if (active) {
 
-                // getUpdatedRobotLocation() will return null if no new information is available since
-                // the last time that call was made, or if the trackable is not currently visible.
-                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
-                if (robotLocationTransform != null) {
-                    lastLocation = robotLocationTransform;
-                }
-                break;
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = robot.rightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.leftDrive.setTargetPosition(newLeftTarget);
+            robot.rightDrive.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.leftDrive.setPower(Math.abs(speed));
+            robot.rightDrive.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (active &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.leftDrive.getCurrentPosition(),
+                        robot.rightDrive.getCurrentPosition());
+                telemetry.update();
             }
-        }
 
-        // Provide feedback as to where the robot is located (if we know).
-        if (targetVisible) {
-            // express position (translation) of robot in inches.
-            assert lastLocation != null : "Everything broke. PAAAANIC!";
-            VectorF translation = lastLocation.getTranslation();
+            // Stop all motion;
+            robot.leftDrive.setPower(0);
+            robot.rightDrive.setPower(0);
 
-            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f", translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
+            // Turn off RUN_TO_POSITION
+            robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            // express the rotation of the robot in degrees.
-            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-        } else {
-            telemetry.addData("Visible Target", "none");
+            //  sleep(250);   // optional pause after each move
         }
     }
 }

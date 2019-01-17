@@ -4,12 +4,13 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(group = "Aftershock", name = "Aftershock Autonomous 2018")
-public class AftershockAutonomous2018 extends OpMode {
+@Autonomous(group = "Aftershock", name = "Aftershock Autonomous Depot 2018")
+public class AftershockAutonomousDepot2018 extends LinearOpMode {
     //Gold align detector
     private GoldAlignDetector detector;
 
@@ -19,10 +20,8 @@ public class AftershockAutonomous2018 extends OpMode {
 
     private static final double COUNTS_PER_INCH = 68.376;
 
-    private boolean active = false;
-
     @Override
-    public void init() {
+    public void runOpMode(){
         //Init the hardware map
         robot.init(hardwareMap);
 
@@ -32,8 +31,6 @@ public class AftershockAutonomous2018 extends OpMode {
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        active = true;
 
         //--------DogeCV--------
 
@@ -57,46 +54,34 @@ public class AftershockAutonomous2018 extends OpMode {
         detector.ratioScorer.perfectRatio = 1.0;
 
         detector.enable();
-    }
 
-    @Override
-    public void start() {
+        waitForStart();
+        /*
         //Start rotating to find gold
         robot.rightDrive.setPower(0.12);
         robot.leftDrive.setPower(-0.12);
-    }
 
-    @Override
-    public void loop() {
-        //Some diagnostic data
-        telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
-        telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
+        while(!(detector.getAligned() && !detector.getConstrained())) {
+            //Some diagnostic data
+            telemetry.addData("IsAligned", detector.getAligned()); // Is the bot aligned with the gold mineral
+            telemetry.addData("X Pos", detector.getXPosition()); // Gold X pos.
 
-
-        if(!(detector.getAligned() && !detector.getConstrained())){
             //Not aligned, keep going
             telemetry.addLine("NOOOOO");
             telemetry.update();
-        }else{
-            //Aligned!
-            telemetry.addLine("YASSSS");
-            telemetry.update();
-
-            //Drive forward
-            //robot.rightDrive.setPower(0.3);
-            //robot.leftDrive.setPower(0.3);
-            encoderDrive(0.3, 24, 24, 4);
-            encoderDrive(0.2, 12, -12, 3);
-            encoderDrive
-
         }
-    }
+        //Aligned!
+        telemetry.addLine("YASSSS");
+        telemetry.update();
+        */
+        //Drive forward
+        //robot.rightDrive.setPower(0.3);
+        //robot.leftDrive.setPower(0.3);
+        //encoderDrive(0.3, 36, 36, 4);
+        encoderDrive(0.2, 44, -44, 100);
 
-    @Override
-    public void stop() {
         //Disable and stop detectors
         detector.disable();
-        //vuforia.stop();
     }
 
     private void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS) {
@@ -104,7 +89,7 @@ public class AftershockAutonomous2018 extends OpMode {
         int newRightTarget;
 
         // Ensure that the opmode is still active
-        if (active) {
+        if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
@@ -127,7 +112,7 @@ public class AftershockAutonomous2018 extends OpMode {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (active &&
+            while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 

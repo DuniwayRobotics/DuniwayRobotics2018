@@ -22,10 +22,6 @@ public class AftershockHardware2018 {
     //Marker flipper
     Servo marker = null;
 
-    //--------SENSORS--------
-    //Arm raising limit switch
-    DigitalChannel limitSwitch = null;
-
     void init(HardwareMap ahwMap){
         hwMap = ahwMap;
 
@@ -42,8 +38,5 @@ public class AftershockHardware2018 {
         armRight.setPosition(0);
         marker = hwMap.get(Servo.class, "marker_placer");
         marker.setPosition(0);
-
-        //--------SENSORS--------
-        //limitSwitch = hwMap.get(DigitalChannel.class, "limit_switch");
     }
 }

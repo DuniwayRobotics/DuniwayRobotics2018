@@ -81,7 +81,7 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
         //Drive forward
         //robot.rightDrive.setPower(0.3);
         //robot.leftDrive.setPower(0.3);
-        encoderDrive(0.3, 24, 24, 4);
+        encoderDrive(0.3, 36, 36, 4);
 
 
         //Disable and stop detectors

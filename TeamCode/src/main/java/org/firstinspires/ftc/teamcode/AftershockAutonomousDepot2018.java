@@ -5,14 +5,11 @@ import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(group = "Aftershock", name = "Aftershock Autonomous Depot 2018")
 public class AftershockAutonomousDepot2018 extends LinearOpMode {
-    //Gold align detector
-    private GoldAlignDetector detector;
 
     //Robot hardware
     private AftershockHardware2018 robot = new AftershockHardware2018();
@@ -34,8 +31,8 @@ public class AftershockAutonomousDepot2018 extends LinearOpMode {
 
         //--------DogeCV--------
 
-        //Create a GoldAlignDetector that can also be used for Vuforia
-        detector = new GoldAlignDetector();
+        //Create a GoldAlignDetector
+        GoldAlignDetector detector = new GoldAlignDetector();
         detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
 
@@ -56,29 +53,44 @@ public class AftershockAutonomousDepot2018 extends LinearOpMode {
         detector.enable();
 
         waitForStart();
-        /*
+
         //Start rotating to find gold
         robot.rightDrive.setPower(0.12);
         robot.leftDrive.setPower(-0.12);
+
+        runtime.reset();
 
         while(!(detector.getAligned() && !detector.getConstrained())) {
             //Some diagnostic data
             telemetry.addData("IsAligned", detector.getAligned()); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos", detector.getXPosition()); // Gold X pos.
+            telemetry.addData("Time", runtime.milliseconds());
 
             //Not aligned, keep going
             telemetry.addLine("NOOOOO");
             telemetry.update();
         }
+
+        double turnTime = runtime.seconds();
+
         //Aligned!
         telemetry.addLine("YASSSS");
         telemetry.update();
-        */
-        //Drive forward
-        //robot.rightDrive.setPower(0.3);
-        //robot.leftDrive.setPower(0.3);
-        //encoderDrive(0.3, 36, 36, 4);
-        encoderDrive(0.2, 44, -44, 100);
+
+        //Figure out location
+        if(turnTime < 2){
+            encoderDrive(0.3, 18, 18, 6);
+            encoderDrive(0.2, 14, -14, 5);
+            encoderDrive(0.3, -18, -18, 2);
+        }else if(turnTime < 4){
+            encoderDrive(0.3, 52, 52, 6);
+            encoderDrive(0.2, 38, -38, 5);
+        }else{
+            encoderDrive(0.3, 36, 36, 6);
+            encoderDrive(0.2, -14, 14, 5);
+            encoderDrive(0.3, -18, -18, 2);
+        }
+        robot.marker.setPosition(0.9);
 
         //Disable and stop detectors
         detector.disable();
@@ -97,7 +109,7 @@ public class AftershockAutonomousDepot2018 extends LinearOpMode {
             robot.leftDrive.setTargetPosition(newLeftTarget);
             robot.rightDrive.setTargetPosition(newRightTarget);
 
-            // Turn On RUN_TO_POSITION
+            // Turn on RUN_TO_POSITION
             robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

@@ -20,8 +20,6 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
 
     private static final double COUNTS_PER_INCH = 68.376;
 
-    private boolean active = false;
-
     @Override
     public void runOpMode() {
         //Init the hardware map
@@ -33,8 +31,6 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        active = true;
 
         //--------DogeCV--------
 
@@ -61,11 +57,14 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
 
         waitForStart();
 
+        robot.armLeft.setPosition(0);
+        robot.armRight.setPosition(0.3);
+
         //Start rotating to find gold
         robot.rightDrive.setPower(0.12);
         robot.leftDrive.setPower(-0.12);
 
-        while(!(detector.getAligned() && !detector.getConstrained())){
+        while(!(detector.getAligned() && !detector.getConstrained()) && opModeIsActive()){
             //Some diagnostic data
             telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , detector.getXPosition()); // Gold X pos.
@@ -93,7 +92,7 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
         int newRightTarget;
 
         // Ensure that the opmode is still active
-        if (active) {
+        if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
@@ -116,7 +115,7 @@ public class AftershockAutonomousCrater2018 extends LinearOpMode {
             // always end the motion as soon as possible.
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (active &&
+            while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 

@@ -54,13 +54,16 @@ public class AftershockAutonomousDepot2018 extends LinearOpMode {
 
         waitForStart();
 
+        robot.armLeft.setPosition(0);
+        robot.armRight.setPosition(0.3);
+
         //Start rotating to find gold
         robot.rightDrive.setPower(0.12);
         robot.leftDrive.setPower(-0.12);
 
         runtime.reset();
 
-        while(!(detector.getAligned() && !detector.getConstrained())) {
+        while(!(detector.getAligned() && !detector.getConstrained()) && opModeIsActive()) {
             //Some diagnostic data
             telemetry.addData("IsAligned", detector.getAligned()); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos", detector.getXPosition()); // Gold X pos.
@@ -78,17 +81,17 @@ public class AftershockAutonomousDepot2018 extends LinearOpMode {
         telemetry.update();
 
         //Figure out location
-        if(turnTime < 2){
-            encoderDrive(0.3, 18, 18, 6);
-            encoderDrive(0.2, 14, -14, 5);
-            encoderDrive(0.3, -18, -18, 2);
-        }else if(turnTime < 4){
+        if(turnTime < 3){
+            encoderDrive(0.3, 24, 24, 6);
+            encoderDrive(0.2, 38, -30, 5);
+            encoderDrive(0.3, -30, -30, 2);
+        }else if(turnTime < 4.5){
             encoderDrive(0.3, 52, 52, 6);
             encoderDrive(0.2, 38, -38, 5);
         }else{
-            encoderDrive(0.3, 36, 36, 6);
-            encoderDrive(0.2, -14, 14, 5);
-            encoderDrive(0.3, -18, -18, 2);
+            encoderDrive(0.3, 28, 28, 6);
+            encoderDrive(0.2, -30, 38, 5);
+            encoderDrive(0.3, -30, -30, 2);
         }
         robot.marker.setPosition(0.9);
 

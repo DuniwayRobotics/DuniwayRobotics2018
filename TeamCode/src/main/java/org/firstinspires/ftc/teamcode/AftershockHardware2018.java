@@ -33,9 +33,9 @@ public class AftershockHardware2018 {
 
         //--------SERVOS--------
         armLeft = hwMap.get(Servo.class, "arm_left");
-        armLeft.setPosition(0);
+        //armLeft.setPosition(0);
         armRight = hwMap.get(Servo.class, "arm_right");
-        armRight.setPosition(0);
+        //armRight.setPosition(0);
         marker = hwMap.get(Servo.class, "marker_placer");
         marker.setPosition(0);
     }

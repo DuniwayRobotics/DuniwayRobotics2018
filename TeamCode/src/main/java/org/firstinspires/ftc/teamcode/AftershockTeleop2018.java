@@ -17,9 +17,12 @@ public class AftershockTeleop2018 extends LinearOpMode {
 
         waitForStart();
 
+        robot.armLeft.setPosition(0);
+        robot.armRight.setPosition(0.3);
+
         while (opModeIsActive()){
-            robot.leftDrive.setPower(-gamepad1.left_stick_y);
-            robot.rightDrive.setPower(-gamepad1.right_stick_y);
+            robot.leftDrive.setPower(-gamepad1.left_stick_y * 0.5);
+            robot.rightDrive.setPower(-gamepad1.right_stick_y * 0.5);
 
             //Move arm up/down
             if (gamepad1.dpad_up){
